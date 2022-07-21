@@ -63,7 +63,7 @@ app.post('/onMessage', async (req, res) => {
     if (text != null) {
         await messages.send({
             message_type: "text",
-            to: req.body.from.number,
+            to: req.body.from,
             from: vonageNumber.number,
             channel: vonageNumber.type,
             text: text
