@@ -1,14 +1,22 @@
 import { neru, Messages, Voice } from 'neru-alpha';
+import express from 'express';
 
-const router = neru.Router();
-const session = neru.createSession();
+const app = express();
+const port = process.env.NERU_APP_PORT;
+
+app.use(express.json());
 
 const vonageNumber = JSON.parse(process.env.NERU_CONFIGURATIONS).contact;
 
+const session = neru.createSession();
 const voice = new Voice(session);
 await voice.onVapiAnswer('onCall').execute();
 
-router.post('/onCall', async (req, res, next) => { 
+app.get('/_/health', async (req, res) => {
+    res.sendStatus(200);
+});
+
+app.post('/onCall', async (req, res, next) => { 
     const session = neru.createSession();
     const voice = new Voice(session);
     const messages = new Messages(session);
@@ -35,7 +43,7 @@ router.post('/onCall', async (req, res, next) => {
     res.json(ncco);
 });
 
-router.post('/onEvent', async (req, res) => {
+app.post('/onEvent', async (req, res) => {
     if (req.body.speech != null) {
         const session = neru.getSessionFromRequest(req);
         const state = session.getState();
@@ -46,7 +54,7 @@ router.post('/onEvent', async (req, res) => {
     res.sendStatus(200);
 });
 
-router.post('/onMessage', async (req, res) => {
+app.post('/onMessage', async (req, res) => {
     const session = neru.getSessionFromRequest(req);
     const messages = new Messages(session);
     const state = session.getState();
@@ -55,7 +63,7 @@ router.post('/onMessage', async (req, res) => {
     if (text != null) {
         await messages.send({
             message_type: "text",
-            to: req.body.from,
+            to: req.body.from.number,
             from: vonageNumber.number,
             channel: vonageNumber.type,
             text: text
@@ -65,4 +73,6 @@ router.post('/onMessage', async (req, res) => {
     res.sendStatus(200);
 });
 
-export { router };
+app.listen(port, () => {
+    console.log(`App listening on port ${port}`)
+});
