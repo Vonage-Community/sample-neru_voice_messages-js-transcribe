@@ -36,10 +36,9 @@ instance:
     capabilities:
         - voice
         - messaging
-    configurations:
-        contact:
-            number: "$YOUR_VONAGE_NUMBER"
-            type: sms
+    environment:
+        - name: VONAGE_NUMBER
+          value: "$YOUR_VONAGE_NUMBER"
 debug:
     name: debug
     entrypoint: [nodemon, --inspect, index.js]

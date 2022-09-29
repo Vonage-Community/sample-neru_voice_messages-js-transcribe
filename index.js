@@ -6,7 +6,7 @@ const port = process.env.NERU_APP_PORT;
 
 app.use(express.json());
 
-const vonageNumber = JSON.parse(process.env.NERU_CONFIGURATIONS).contact;
+const vonageNumber = process.env.VONAGE_NUMBER;
 
 const session = neru.createSession();
 const voice = new Voice(session);
@@ -24,7 +24,7 @@ app.post('/onCall', async (req, res, next) => {
     await messages.onMessage(
         'onMessage',
         {type: 'sms', number: req.body.from },
-        vonageNumber
+        {type: 'sms', number: vonageNumber}
     ).execute();
 
     await voice.onVapiEvent({ vapiUUID: req.body.uuid, callback: "onEvent" }).execute();
