@@ -2,6 +2,12 @@
 
 This project shows how to use NeRu sessions to persist context in your application. When you call the number linked to your application, you can leave a message which will be transcribed by the Voice API. Once the call is complete you can text the same number to get your transcript.
 
+## Receive Inbound SMS Webhooks
+
+To receive inbound SMS messages to your NeRu applications you will need to update your API Settings on the Vonage Dashboard to send inbound SMS webhooks to the Messages API:
+
+![API Settings SMS Webhook Toggle](sms-webhooks.png)
+
 ## Running the project
 
 To run the project after downloading/cloning, first install the dependencies:
@@ -35,7 +41,7 @@ instance:
     entrypoint: [node, index.js]
     capabilities:
         - voice
-        - messaging
+        - messages-v1
     environment:
         - name: VONAGE_NUMBER
           value: "$YOUR_VONAGE_NUMBER"
@@ -49,9 +55,5 @@ Then start the project locally using:
 ```sh
 neru debug
 ```
-
-Go to [your application](https://dashboard.nexmo.com/applications) on the Vonage API Dashboard and set the right version of Messages API. For this app it should be v1:
-
-![dashboard messages setting](dashboard.png)
 
 Now you can call then text number linked to your application.
